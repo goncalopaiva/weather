@@ -95,22 +95,22 @@ function App() {
 	};
 
 	return (
-		<div class="">
-			<div id="search" className="d-flex justify-content-md-center align-items-center m-3">
-				
+		<div>
+			<div id="search" className="d-flex justify-content-md-center align-items-center">
+
 				<input type="text" value={city} onChange={(e) => setCity(e.target.value)} onKeyDown={(e) => {if (e.key === "Enter") fetchWeather()}} 
 				placeholder="Enter a city" style={{width:"40%"}} className="form-control m-2"/>
 
-				<div className="m-2" style={{width:"10%"}}>
+				<div className="m-2" style={{width:"30%"}}>
 					<select style={{width:"100%"}} className="custom-select form-control" id="inputUnits" onChange={(e) => {setUnit(e.target.value); changeUnits(e.target.value); }}>
 						<option value="metric" selected>Metric</option>
 						<option value="imperial">Imperial</option>
 					</select>
 				</div>
 				
-				<div className="m-2">
-					<button type="button" className="btn btn-outline-dark" onClick={fetchWeather}>
-						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-search" viewBox="0 0 16 16">
+				<div className="m-2" style={{width:"30%"}}>
+					<button type="button" className="btn btn-outline-dark" style={{width:"100%"}} onClick={fetchWeather}>
+						<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" className="bi bi-search" viewBox="0 0 16 16">
 							<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
 						</svg> Search
 					</button>
@@ -126,69 +126,67 @@ function App() {
 			{weather && (
 			<div id="result">
 				{/* Today Forecast */}
-				<div id = "resultToday" className="m-1 p-1 d-flex justify-content-md-center align-items-center">
-					<div class="row border" style={{width: '65%'}} >
-						<div class="col-md-8 ">
-							<h1 className="display-5">{weather.city.name}</h1>
-							<p className="lead" style={{fontSize:"12px"}}>{weather.city.coord.lat}, {weather.city.coord.lon} ({weather.city.country})</p>
-							<div className="row">
-								<div className="col-4">
-									<p className="">
-										<span className="fw-bolder">Max. temperature</span>
-										<br></br>
-										<a>{weather.list[0].main.temp_max}{unitTemperature}</a>
-									</p>
-								</div>
-								<div className="col-4">
-									<p className="">
-										<span className="fw-bolder">Wind</span>
-										<br></br>
-										<a>{weather.list[0].wind.speed} {unitWind}</a>
-									</p>
-								</div>
-								<div className="col-4">
-									<p className="">
-										<span className="fw-bolder">Pressure</span>
-										<br></br>
-										<a>{weather.list[0].main.pressure} hPa</a>
-									</p>
-								</div>
+				<div id = "resultToday" class="d-flex border m-1" style={{width:"100%"}}>
+					<div class="p-1"> {/* Today detail */}
+						<h1 className="display-5">{weather.city.name}</h1>
+						<p className="lead" style={{fontSize:"12px"}}>{weather.city.coord.lat}, {weather.city.coord.lon} ({weather.city.country})</p>
+						<div className="row">
+							<div className="col">
+								<p className="">
+									<span className="fw-bolder">Max. temp</span>
+									<br></br>
+									<a>{weather.list[0].main.temp_max}{unitTemperature}</a>
+								</p>
 							</div>
-							<div className="row">
-								<div className="col-4">
-									<p className="">
-										<span className="fw-bolder">Min. temperature</span>
-										<br></br>
-										<a>{weather.list[0].main.temp_min}{unitTemperature}</a>
-									</p>
-								</div>
-								<div className="col-4">
-									<p className="">
-										<span className="fw-bolder">Humidity</span>
-										<br></br>
-										<a>{weather.list[0].main.humidity}%</a>
-									</p>
-								</div>
-								<div className="col-4">
-									<p className="">
-										<span className="fw-bolder">Visibility</span>
-										<br></br>
-										<a>{weather.list[0].visibility} km</a>
-									</p>
-								</div>
+							<div className="col">
+								<p className="">
+									<span className="fw-bolder">Wind</span>
+									<br></br>
+									<a>{weather.list[0].wind.speed} {unitWind}</a>
+								</p>
+							</div>
+							<div className="col">
+								<p className="">
+									<span className="fw-bolder">Pressure</span>
+									<br></br>
+									<a>{weather.list[0].main.pressure} hPa</a>
+								</p>
 							</div>
 						</div>
-						<div class="col-md-4">
-							<img className="img-responsive center-block d-block mx-auto" style={{height: "90px"}} src={`https://openweathermap.org/img/wn/04d@4x.png`}/>
-							<p className="fs-1 text-center" style={{width:"100%"}}>{weather.list[0].main.temp}{unitTemperature}</p>
-							<p className="fs-7 text-center" style={{width:"100%"}}>Feels like {weather.list[0].main.feels_like}{unitTemperature}</p>
-							<p className="fs-5 text-center" style={{width:"100%"}}>Clouds{weather.list[0].weather.main}</p>
+						<div className="row">
+							<div className="col">
+								<p className="">
+									<span className="fw-bolder">Min. temp</span>
+									<br></br>
+									<a>{weather.list[0].main.temp_min}{unitTemperature}</a>
+								</p>
+							</div>
+							<div className="col">
+								<p className="">
+									<span className="fw-bolder">Humidity</span>
+									<br></br>
+									<a>{weather.list[0].main.humidity}%</a>
+								</p>
+							</div>
+							<div className="col">
+								<p className="">
+									<span className="fw-bolder">Visibility</span>
+									<br></br>
+									<a>{weather.list[0].visibility} km</a>
+								</p>
+							</div>
 						</div>
+					</div>
+					<div class="p-1"> {/* Today image and temperatures */} {/* //TODO: Alinhar verticalmente*/}
+						<img className="img-responsive center-block d-block mx-auto" style={{height: "10vh"}} src={`https://openweathermap.org/img/wn/04d@4x.png`}/>
+						<p className="text-center">{weather.list[0].main.temp}{unitTemperature}</p>
+						<p className="text-center">Feels like {weather.list[0].main.feels_like}{unitTemperature}</p>
+						<p className="text-center">Clouds{weather.list[0].weather.main}</p>
 					</div>
 				</div>
 
 				{/* Next Days Forecast */}
-				<div id="resultNextDays" className="container" style={{width: '65%'}}>
+				<div id="resultNextDays" className="container" style={{width: '100%'}}	>
 					{weather ? generateNextDaysWeatherForecast() : null}
 				</div>
 			</div>					
