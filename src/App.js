@@ -126,8 +126,11 @@ function App() {
 			{weather && (
 			<div id="result">
 				{/* Today Forecast */}
-				<div id = "resultToday" class="d-flex border m-1" style={{width:"100%"}}>
-					<div class="p-1"> {/* Today detail */}
+				<div class="card">
+					<div class="card-header">Today's Weather</div>
+					<div class="card-body">
+					<div id = "resultToday" class="d-flex justify-content-md-center" >
+					<div class="" style={{width:"80%"}}> {/* Today detail */}
 						<h1 className="display-5">{weather.city.name}</h1>
 						<p className="lead" style={{fontSize:"12px"}}>{weather.city.coord.lat}, {weather.city.coord.lon} ({weather.city.country})</p>
 						<div className="row">
@@ -177,18 +180,93 @@ function App() {
 							</div>
 						</div>
 					</div>
-					<div class="p-1"> {/* Today image and temperatures */} {/* //TODO: Alinhar verticalmente*/}
-						<img className="img-responsive center-block d-block mx-auto" style={{height: "10vh"}} src={`https://openweathermap.org/img/wn/04d@4x.png`}/>
+					<div class="justify-content-center align-self-center" style={{width:"20%"}}> {/* Today image and temperatures */} {/* //TODO: Alinhar verticalmente*/}
+						<img className="img-responsive center-block d-block mx-auto" style={{width: "90%"}} src={`https://openweathermap.org/img/wn/04d@4x.png`}/>
+						<p className="text-center fw-bolder">{weather.list[0].main.temp}{unitTemperature}</p>
+						<p className="text-center">Feels like {weather.list[0].main.feels_like}{unitTemperature}</p>
+						<p className="text-center">Clouds{weather.list[0].weather.main}</p>
+					</div>
+				</div>
+					</div>
+				</div>
+
+				<br></br>
+
+				<div class="card">
+					<div class="card-header">Next 5 days</div>
+					<div class="card-body">
+						<div id="resultNextDays" className="container" style={{width: '100%'}}	>
+							{weather ? generateNextDaysWeatherForecast() : null}
+						</div>
+					</div>
+				</div>
+
+				<br></br>
+
+				{/*
+				<div id = "resultToday" class="d-flex border p-1 justify-content-md-center" >
+					<div class="" style={{width:"80%"}}> 
+						<h1 className="display-5">{weather.city.name}</h1>
+						<p className="lead" style={{fontSize:"12px"}}>{weather.city.coord.lat}, {weather.city.coord.lon} ({weather.city.country})</p>
+						<div className="row">
+							<div className="col">
+								<p className="">
+									<span className="fw-bolder">Max. temp</span>
+									<br></br>
+									<a>{weather.list[0].main.temp_max}{unitTemperature}</a>
+								</p>
+							</div>
+							<div className="col">
+								<p className="">
+									<span className="fw-bolder">Wind</span>
+									<br></br>
+									<a>{weather.list[0].wind.speed} {unitWind}</a>
+								</p>
+							</div>
+							<div className="col">
+								<p className="">
+									<span className="fw-bolder">Pressure</span>
+									<br></br>
+									<a>{weather.list[0].main.pressure} hPa</a>
+								</p>
+							</div>
+						</div>
+						<div className="row">
+							<div className="col">
+								<p className="">
+									<span className="fw-bolder">Min. temp</span>
+									<br></br>
+									<a>{weather.list[0].main.temp_min}{unitTemperature}</a>
+								</p>
+							</div>
+							<div className="col">
+								<p className="">
+									<span className="fw-bolder">Humidity</span>
+									<br></br>
+									<a>{weather.list[0].main.humidity}%</a>
+								</p>
+							</div>
+							<div className="col">
+								<p className="">
+									<span className="fw-bolder">Visibility</span>
+									<br></br>
+									<a>{weather.list[0].visibility} km</a>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class="justify-content-center align-self-center" style={{width:"20%"}}> 
+						<img className="img-responsive center-block d-block mx-auto" style={{width: "90%"}} src={`https://openweathermap.org/img/wn/04d@4x.png`}/>
 						<p className="text-center">{weather.list[0].main.temp}{unitTemperature}</p>
 						<p className="text-center">Feels like {weather.list[0].main.feels_like}{unitTemperature}</p>
 						<p className="text-center">Clouds{weather.list[0].weather.main}</p>
 					</div>
 				</div>
 
-				{/* Next Days Forecast */}
 				<div id="resultNextDays" className="container" style={{width: '100%'}}	>
 					{weather ? generateNextDaysWeatherForecast() : null}
 				</div>
+				*/}
 			</div>					
 			)}
 		</div>
