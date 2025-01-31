@@ -1,6 +1,9 @@
 import './App.css';
 import React, {useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Line } from "react-chartjs-2";
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from "chart.js";
+
 
 function App() {
   
@@ -36,10 +39,16 @@ function App() {
 			return null;
 		}
 	
+		var isGrey = true;
 		const divs = [];
+		let daysHelper = [];
 		for (let i = 1; i < weather.list.length; i++) {
+			if (!daysHelper.some(dayHelper => dayHelper.startsWith(weather.list[i].dt_txt.substring(0, 10)))) {
+				isGrey = !isGrey;
+			}
+			daysHelper.push(weather.list[i].dt_txt.substring(0, 10));
 			divs.push(
-				<div className="card m-1 col-4" style={{width: '9rem'}}>
+				<div className="card m-1 col-4" style={{ width: '9rem', backgroundColor: isGrey ? 'lightgrey' : 'transparent' }}>
 					<p className="card-text text-center">
 						<span className="fw-bolder">{weather.list[i].dt_txt.substring(0,10)}</span>
 						<br></br>
@@ -49,8 +58,8 @@ function App() {
 					<div className="card-body">
 						<p className="card-text text-center">{weather.list[i].weather[0].main}</p>
 						<p className="card-text text-center">
-							<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" className="bi bi-arrow-up-circle me-2" viewBox="0 0 16 16">
-								<path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 ß7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z"/>
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-circle" viewBox="0 0 16 16">
+  								<path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z"/>
 							</svg> {weather.list[i].main.temp_max}{unitTemperature}
 						</p>
 						<p className="card-text text-center">
@@ -63,6 +72,106 @@ function App() {
 			);
 		}
 		return <div className="row flex-nowrap text-center overflow-x-scroll">{divs}</div>;
+	}
+
+	const createGraph = () => {
+		
+		ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
+
+		let temperatures = [];
+		let days = [];
+		for (let i = 0; i < weather.list.length; i++) {
+			let currentDay = weather.list[i].dt_txt;
+			let formattedTime = currentDay.substring(11, 16);
+			let formattedDate = currentDay.substring(0, 10);
+			if (days.some(day => day.startsWith(formattedDate))) {
+				days.push(formattedTime); 
+				console.log("days.push formatted time:: " + formattedTime)
+			} else {
+				days.push(currentDay); 
+				console.log("days.push currentDay:: " + currentDay)
+			}
+			temperatures.push(weather.list[i].main.temp);
+		}
+		
+		let minTemp = Math.round(Math.min(...temperatures))-1;
+		let maxTemp = Math.round(Math.max(...temperatures))+1;
+
+		const canvasData = {
+			datasets: [
+			{
+				label: "Temperature",
+				borderColor: "navy",
+				pointRadius: 0,
+				fill: true,
+				backgroundColor: 'lightgrey',
+				lineTension: 0.4,
+				data: temperatures,
+				borderWidth: 1,
+			},
+			],
+		};
+
+		const options = {
+			scales: {
+			x: {
+				grid: {
+				display: true,
+				},
+				labels: days,
+				ticks: {
+				color: "black",
+				font: {
+					family: "Arial",
+					size: 10,
+				},
+				},
+			},
+			y: {
+				grid: {
+				display: false,
+				},
+				border: {
+				display: false,
+				},
+				min: minTemp,
+				max: maxTemp,
+				ticks: {
+				stepSize: 1,
+				color: "black",
+				font: {
+					family: "Arial",
+					size: 12,
+				},
+				},
+			},
+			},
+			maintainAspectRatio: true,
+			responsive: true,
+			plugins: {
+			legend: {
+				display: false,
+			},
+			title: {
+				display: false,
+			},
+			},
+		};
+
+		const graphStyle = {
+			minHeight: "",
+			maxWidth: "",
+			width: "100%",
+			border: "1px solid #C4C4C4",
+			borderRadius: "0.5rem",
+			padding: "",
+		};
+
+		return (
+			<div style={graphStyle}>
+				<Line id="home" options={options} data={canvasData} />
+			</div>
+		);
 	}
 
 	const fetchWeather = async () => {
@@ -203,75 +312,15 @@ function App() {
 						<div id="resultNextDays" className="container" style={{width: '100%'}}	>
 							{weather ? generateNextDaysWeatherForecast() : null}
 						</div>
+						<br></br>
+						<div id="graphNextDays" className="container" style={{width: '100%'}}	>
+							{createGraph()}
+						</div>
 					</div>
 				</div>
 
 				<br></br>
 
-				{/*
-				<div id = "resultToday" class="d-flex border p-1 justify-content-md-center" >
-					<div class="" style={{width:"80%"}}> 
-						<h1 className="display-5">{weather.city.name}</h1>
-						<p className="lead" style={{fontSize:"12px"}}>{weather.city.coord.lat}, {weather.city.coord.lon} ({weather.city.country})</p>
-						<div className="row">
-							<div className="col">
-								<p className="">
-									<span className="fw-bolder">Max. temp</span>
-									<br></br>
-									<a>{weather.list[0].main.temp_max}{unitTemperature}</a>
-								</p>
-							</div>
-							<div className="col">
-								<p className="">
-									<span className="fw-bolder">Wind</span>
-									<br></br>
-									<a>{weather.list[0].wind.speed} {unitWind}</a>
-								</p>
-							</div>
-							<div className="col">
-								<p className="">
-									<span className="fw-bolder">Pressure</span>
-									<br></br>
-									<a>{weather.list[0].main.pressure} hPa</a>
-								</p>
-							</div>
-						</div>
-						<div className="row">
-							<div className="col">
-								<p className="">
-									<span className="fw-bolder">Min. temp</span>
-									<br></br>
-									<a>{weather.list[0].main.temp_min}{unitTemperature}</a>
-								</p>
-							</div>
-							<div className="col">
-								<p className="">
-									<span className="fw-bolder">Humidity</span>
-									<br></br>
-									<a>{weather.list[0].main.humidity}%</a>
-								</p>
-							</div>
-							<div className="col">
-								<p className="">
-									<span className="fw-bolder">Visibility</span>
-									<br></br>
-									<a>{weather.list[0].visibility} km</a>
-								</p>
-							</div>
-						</div>
-					</div>
-					<div class="justify-content-center align-self-center" style={{width:"20%"}}> 
-						<img className="img-responsive center-block d-block mx-auto" style={{width: "90%"}} src={`https://openweathermap.org/img/wn/04d@4x.png`}/>
-						<p className="text-center">{weather.list[0].main.temp}{unitTemperature}</p>
-						<p className="text-center">Feels like {weather.list[0].main.feels_like}{unitTemperature}</p>
-						<p className="text-center">Clouds{weather.list[0].weather.main}</p>
-					</div>
-				</div>
-
-				<div id="resultNextDays" className="container" style={{width: '100%'}}	>
-					{weather ? generateNextDaysWeatherForecast() : null}
-				</div>
-				*/}
 			</div>					
 			)}
 		</div>
