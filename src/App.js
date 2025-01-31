@@ -126,8 +126,11 @@ function App() {
 			{weather && (
 			<div id="result">
 				{/* Today Forecast */}
-				<div class="card">
-					<div class="card-header">Today's Weather</div>
+				<br></br>
+				<div class="card m-1 ">
+					<div class="card-header">
+						<span class="fw-bolder">Today's Weather</span>
+					</div>
 					<div class="card-body">
 					<div id = "resultToday" class="d-flex justify-content-md-center" >
 					<div class="" style={{width:"80%"}}> {/* Today detail */}
@@ -192,8 +195,10 @@ function App() {
 
 				<br></br>
 
-				<div class="card">
-					<div class="card-header">Next 5 days</div>
+				<div class="card m-1">
+					<div class="card-header">
+						<span class="fw-bolder">Next 5 days</span>
+					</div>
 					<div class="card-body">
 						<div id="resultNextDays" className="container" style={{width: '100%'}}	>
 							{weather ? generateNextDaysWeatherForecast() : null}
