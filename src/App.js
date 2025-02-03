@@ -3,7 +3,8 @@ import React, {useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from "chart.js";
-
+import { MapContainer, TileLayer } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
 function App() {
   
@@ -21,15 +22,15 @@ function App() {
 	const [error, setError] = useState(""); 
 
 	const changeUnits = (data) => {
+		if (!city) {
+			fetchWeather();
+		}
 		if (data == "metric") { 
 			setUnitTemperature("ºC"); 
 			setUnitWind("km/h");
 		} else if (data == "imperial") { 
 			setUnitTemperature("ºF");
 			setUnitWind("mph");
-		}
-		if (!city) {
-			fetchWeather();
 		}
 	}
 		
@@ -58,7 +59,7 @@ function App() {
 					<div className="card-body">
 						<p className="card-text text-center">{weather.list[i].weather[0].main}</p>
 						<p className="card-text text-center">
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-circle" viewBox="0 0 16 16">
+							<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-arrow-up-circle me-2" viewBox="0 0 16 16">
   								<path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z"/>
 							</svg> {weather.list[i].main.temp_max}{unitTemperature}
 						</p>
@@ -73,6 +74,25 @@ function App() {
 		}
 		return <div className="row flex-nowrap text-center overflow-x-scroll">{divs}</div>;
 	}
+	
+	const WeatherMap = () => {
+	  
+		const weatherMapUrl = `https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${apiKey}`;
+
+		let lat = weather.city.coord.lat;
+		let lon = weather.city.coord.lon;
+	  
+		return (
+		  <div style={{ height: '100vh', width: '100%' }}>
+			<MapContainer center={[lat, lon]} zoom={8} style={{ height: '100%', width: '100%' }}>
+			  <TileLayer
+				url={weatherMapUrl}
+				attribution="&copy; <a href='https://www.openweathermap.org/'>OpenWeatherMap</a>"
+			  />
+			</MapContainer>
+		  </div>
+		);
+	  };
 
 	const createGraph = () => {
 		
@@ -86,10 +106,8 @@ function App() {
 			let formattedDate = currentDay.substring(0, 10);
 			if (days.some(day => day.startsWith(formattedDate))) {
 				days.push(formattedTime); 
-				console.log("days.push formatted time:: " + formattedTime)
 			} else {
 				days.push(currentDay); 
-				console.log("days.push currentDay:: " + currentDay)
 			}
 			temperatures.push(weather.list[i].main.temp);
 		}
@@ -313,13 +331,24 @@ function App() {
 							{weather ? generateNextDaysWeatherForecast() : null}
 						</div>
 						<br></br>
-						<div id="graphNextDays" className="container" style={{width: '100%'}}	>
+						<div id="graphNextDays" className="container" style={{width: '100%'}} hidden	>
 							{createGraph()}
 						</div>
 					</div>
 				</div>
 
 				<br></br>
+
+				<div class="card m-1">
+					<div class="card-header">
+						<span class="fw-bolder">Weather Map</span>
+					</div>
+					<div class="card-body">
+						<div id="weatherMap" className="container" style={{width: '100%'}}	>
+							{WeatherMap()}
+						</div>
+					</div>
+				</div>
 
 			</div>					
 			)}
